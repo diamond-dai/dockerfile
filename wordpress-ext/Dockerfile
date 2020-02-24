@@ -1,0 +1,64 @@
+FROM wordpress:latest
+
+RUN apt update && apt install -y --no-install-recommends \
+# install mysql-client
+  default-mysql-client \
+
+# install for pyenv
+  build-essential \
+  libffi-dev \
+  libssl-dev \
+  zlib1g-dev \
+  libbz2-dev \
+  libreadline-dev \
+  libsqlite3-dev \
+
+  # install util
+  git \
+  sudo \
+  less \
+  vim \
+  git \
+  zip \
+  unzip \
+
+# cleanup
+  && rm -rf /var/lib/apt/lists/* \
+  && apt clean
+
+# Countermeasures against events that cache does not disappear
+RUN  sh -c "echo 'EnableSendfile off' >> /etc/apache2/apache2.conf" \
+
+# install wp-cli
+  && curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
+  && chmod +x wp-cli.phar \
+  && mv wp-cli.phar /usr/local/bin/wp \
+  && mkdir -p /var/www/.wp-cli/cache \
+  && chown -R www-data /var/www/.wp-cli \
+  && mkdir /var/www/.composer/ \
+  && chown -R www-data /var/www/.composer \
+
+  # install composer
+  && curl -sS https://getcomposer.org/installer | php \
+  && mv composer.phar /usr/local/bin/composer \
+
+  # install mhsendmail
+  && curl -sSLO https://github.com/mailhog/mhsendmail/releases/download/v0.2.0/mhsendmail_linux_amd64 \
+  && chmod +x mhsendmail_linux_amd64 \
+  && mv mhsendmail_linux_amd64 /usr/local/bin/mhsendmail \
+  && echo 'sendmail_path = "/usr/local/bin/mhsendmail --smtp-addr=mailhog:1025"' > /usr/local/etc/php/conf.d/sendmail.ini
+
+ENV HOME /root
+ENV PYENV_ROOT $HOME/.pyenv
+ENV PATH $PYENV_ROOT/bin:$PATH
+
+# Download pyenv
+RUN git clone https://github.com/pyenv/pyenv.git ~/.pyenv \
+  && echo 'eval "$(pyenv init -)"' >> ~/.bashrc \
+  && . ~/.bashrc \
+  && PYTHON_VER=$(pyenv install --list | grep -v - | grep -v b | tail -1) \
+  && pyenv install $PYTHON_VER \
+  && pyenv global $PYTHON_VER
+
+# keep env
+RUN sed -i -e 's/^Defaults.*env_reset/Defaults env_keep \+= \"PATH\"/g' /etc/sudoers
