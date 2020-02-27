@@ -1,9 +1,5 @@
 FROM php:7.2-apache
 
-# enable modules
-RUN a2enmod rewrite\
-&&  a2enmod include
-
 RUN apt update && apt install -y --no-install-recommends \
 # install mysql-client
   default-mysql-client \
@@ -25,10 +21,28 @@ RUN apt update && apt install -y --no-install-recommends \
   git \
   zip \
   unzip \
+  rsync \
 
 # cleanup
   && rm -rf /var/lib/apt/lists/* \
   && apt clean
+
+ENV HOME /root
+ENV PYENV_ROOT $HOME/.pyenv
+ENV PATH $PYENV_ROOT/bin:$PATH
+
+# Download pyenv
+RUN git clone https://github.com/pyenv/pyenv.git ~/.pyenv \
+  && echo 'eval "$(pyenv init -)"' >> ~/.bashrc \
+  && . ~/.bashrc \
+  && PYTHON_VER=$(pyenv install --list | grep -v - | grep -v b | tail -1) \
+  && pyenv install $PYTHON_VER \
+  && pyenv global $PYTHON_VER
+
+# enable modules
+RUN a2enmod rewrite \
+&&  a2enmod include \
+&&  a2enmod headers
 
 # Countermeasures against events that cache does not disappear
 RUN  sh -c "echo 'EnableSendfile off' >> /etc/apache2/apache2.conf" \
@@ -51,18 +65,6 @@ RUN  sh -c "echo 'EnableSendfile off' >> /etc/apache2/apache2.conf" \
   && chmod +x mhsendmail_linux_amd64 \
   && mv mhsendmail_linux_amd64 /usr/local/bin/mhsendmail \
   && echo 'sendmail_path = "/usr/local/bin/mhsendmail --smtp-addr=mailhog:1025"' > /usr/local/etc/php/conf.d/sendmail.ini
-
-ENV HOME /root
-ENV PYENV_ROOT $HOME/.pyenv
-ENV PATH $PYENV_ROOT/bin:$PATH
-
-# Download pyenv
-RUN git clone https://github.com/pyenv/pyenv.git ~/.pyenv \
-  && echo 'eval "$(pyenv init -)"' >> ~/.bashrc \
-  && . ~/.bashrc \
-  && PYTHON_VER=$(pyenv install --list | grep -v - | grep -v b | tail -1) \
-  && pyenv install $PYTHON_VER \
-  && pyenv global $PYTHON_VER
 
 # keep env
 RUN sed -i -e 's/^Defaults.*env_reset/Defaults env_keep \+= \"PATH\"/g' /etc/sudoers
