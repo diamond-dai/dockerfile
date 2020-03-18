@@ -7,7 +7,7 @@ wpコンテナに以下インストール
 * python3
 * mysql-client
 
-### 接続
+### buildして接続
 
 ```
 ./run.sh

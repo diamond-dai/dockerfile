@@ -1,0 +1,83 @@
+version: '3.3'
+services:
+  # mysql
+  mysql_local:
+    image: mysql:5.7
+    # restart: always
+    ports:
+      - "10106:3306"
+    volumes:
+      - mysql:/var/lib/mysql # データはdatavolumeで管理
+      - ./mysql/my.cnf:/etc/mysql/my.cnf # my.cnf
+      - ./mysql/mysql_db_dump.sh:/opt/mysql_db_dump.sh # dump用スクリプト
+      - ./mysql/data:/mysql-data # ホストとのデータ交換用
+      - "./mysql/init:/docker-entrypoint-initdb.d" # 初期データ投入用
+    env_file:
+      - ./database.env
+
+  # web host
+  httpd:
+    image: diamonddai/php-apache-ext
+    # restart: always
+    depends_on:
+      - mysql_local
+    ports:
+      - "80:80"
+    volumes:
+      - "./webroot/:/var/www/html/"
+      - "./httpd/opt/bin/wp_init.sh:/opt/bin/wp_init.sh"
+      - "./httpd/opt/config/:/opt/config/"
+      - "./httpd/opt/copy/:/opt/copy/"
+    environment:
+      - TZ=Asia/Tokyo
+    env_file:
+      - ./database.env
+      - ./.env
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    # restart: always
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOST=mysql_local
+    links:
+      - mysql_local
+    ports:
+       - 18180:80
+    volumes:
+       - "phpmyadmin:/sessions"
+    env_file:
+      - ./database.env
+
+  mailhog:
+    image: mailhog/mailhog
+    # restart: always
+    ports:
+      - '8025:8025'
+      - '1025:1025'
+    environment:
+        MH_STORAGE: maildir
+        MH_MAILDIR_PATH: /tmp
+    volumes:
+        - "mailhog:/tmp"
+
+  node_sass:
+    image: node:11.10.1-alpine
+    # restart: always
+    volumes:
+      - "./node_sass/:/opt/node_sass/"
+      - "node_sass_modules:/opt/node_sass/node_modules/"
+      - "${NODE_SCSS_DIR}:/opt/assets/scss/"
+      - "${NODE_CSS_DIR}:/opt/assets/css/"
+    working_dir: "/opt/node_sass/"
+    entrypoint: /opt/node_sass/docker-entrypoint.sh
+
+volumes:
+  mysql:
+    driver: 'local'
+  phpmyadmin:
+    driver: 'local'
+  mailhog:
+    driver: 'local'
+  node_sass_modules:
+    driver: 'local'

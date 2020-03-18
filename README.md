@@ -2,9 +2,19 @@
 
 普段使うdockerfile置き場
 
-## 新規追加する場合の手順は以下
+## wordpress-ext
 
-```
-git checkout 21a22f9
-git chedkout -b [ブランチ名]
-```
+wp開発用
+
+## php-apache-ext
+
+php開発用 ssi も入ってるのでただのhtmlにも
+
+## gulp-scss
+
+scssのコンパイル専用
+ホスト側のディレクトリをマウントして監視
+
+opt/assets/scss/ ホスト側のscss入力用
+
+/opt/assets/css/ ホスト側のcss出力用

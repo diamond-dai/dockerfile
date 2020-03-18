@@ -10,7 +10,7 @@ wpコンテナに以下インストール
 
 docker container run -it --name NAME IMAGE bash
 
-### 接続
+### buildして接続
 
 ```
 ./run.sh
