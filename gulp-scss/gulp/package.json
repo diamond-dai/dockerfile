@@ -13,13 +13,16 @@
     "css-mqpacker": "^7.0.0",
     "gulp": "^4.0.2",
     "gulp-autoprefixer": "^7.0.1",
+    "gulp-cached": "^1.1.1",
     "gulp-clean-css": "^4.3.0",
     "gulp-minify-css": "^1.2.4",
     "gulp-plumber": "^1.2.1",
     "gulp-postcss": "^8.0.0",
+    "gulp-prettier": "^2.3.0",
     "gulp-sass": "^4.0.2",
     "gulp-sourcemaps": "^2.6.5",
     "gulp-watch": "^5.0.1",
-    "postcss-sorting": "^5.0.1"
+    "postcss-sorting": "^5.0.1",
+    "prettier": "^1.19.1"
   }
 }
