@@ -15,3 +15,11 @@ cd gulp
 npm install -g npm-check-updates
 ncu -u
 ```
+
+### 本番用build
+
+コンテナ内で下記実行
+
+```
+npm run build
+```

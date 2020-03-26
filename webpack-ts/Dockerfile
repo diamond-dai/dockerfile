@@ -6,4 +6,4 @@ WORKDIR /opt/webpack/
 
 RUN npm i
 
-ENTRYPOINT npm i; npx webpack -w
+ENTRYPOINT npm i; npm run watch
