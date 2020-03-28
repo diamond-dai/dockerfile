@@ -1,39 +1,35 @@
-let cleanCSS = require('gulp-clean-css');
+const cleanCSS = require('gulp-clean-css');
 // let sourcemaps = require('gulp-sourcemaps');
-let postcss = require("gulp-postcss");
-let gulp = require('gulp');
-let watch = require("gulp-watch");
-
-let plumber = require("gulp-plumber");
-let sass = require('gulp-sass');
-
+const gulp = require('gulp');
+const cached = require('gulp-cached');
+const sass = require('gulp-sass');
+const postcss = require("gulp-postcss");
+const postcssSorting = require('postcss-sorting');
+const autoprefixer = require('autoprefixer');
+const cssMqpacker = require('css-mqpacker')
+const plumber = require("gulp-plumber");
 const prettier = require('gulp-prettier');
 
-const cached = require('gulp-cached');
 
-let browsers = ['last 2 versions', "ie >= 11"];
+const browsers = ['last 2 versions', "ie >= 11"];
 // 最新2バージョンまでプレフィックス付与
 
-let sort_options = {
+const sortOptions = {
   'order': [
     'custom-properties', 'dollar-variables', 'declarations', 'at-rules', 'rules'
   ],
-
-  'properties-order': 'alphabetical',
-
   'unspecified-properties-position': 'bottom'
 }
 
-
 //setting : paths
-let paths = {
+const paths = {
   'scss': '/opt/assets/scss/',
   'css': '/opt/assets/css/',
 }
+
 //setting : Sass Options
 let sassOptions = {
   outputStyle: 'expanded'
-  // outputStyle: 'compact'
   // outputStyle: 'compressed'
 }
 
@@ -47,21 +43,18 @@ gulp.task('scss', function () {
       .pipe(gulp.dest(file => file.base))
       .pipe(sass(sassOptions))
       .pipe(postcss([
-        require('postcss-sorting')(sort_options),
-        require('autoprefixer')({ overrideBrowserslist: browsers, grid: true }),
-        require('css-mqpacker'),
+        postcssSorting(sortOptions),
+        autoprefixer({ overrideBrowserslist: browsers, grid: true }),
+        cssMqpacker,
       ]))
       .pipe(cleanCSS())
       .pipe(gulp.dest(paths.css))
   );
 });
 
-gulp.task('watch', function () {
+gulp.task('watch', () => {
   gulp.watch(paths.scss + '**/*.scss', gulp.task('scss'));
 });
 
-
-gulp.task('default', gulp.series(gulp.parallel('watch'), function () {
+gulp.task('default', gulp.series(gulp.parallel('watch'), () => {
 }));
-
-
