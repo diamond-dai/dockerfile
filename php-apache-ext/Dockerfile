@@ -1,10 +1,10 @@
-FROM php:7.2-apache
+FROM php:7.3-apache
 
 RUN apt update && apt install -y --no-install-recommends \
-# install mysql-client
+  # install mysql-client
   default-mysql-client \
 
-# install for pyenv
+  # install for pyenv
   build-essential \
   libffi-dev \
   libssl-dev \
@@ -23,7 +23,7 @@ RUN apt update && apt install -y --no-install-recommends \
   unzip \
   rsync \
 
-# cleanup
+  # cleanup
   && rm -rf /var/lib/apt/lists/* \
   && apt clean
 
@@ -41,8 +41,8 @@ RUN git clone https://github.com/pyenv/pyenv.git ~/.pyenv \
 
 # enable modules
 RUN a2enmod rewrite \
-&&  a2enmod include \
-&&  a2enmod headers
+  && a2enmod include \
+  && a2enmod headers
 
 # Countermeasures against events that cache does not disappear
 RUN  sh -c "echo 'EnableSendfile off' >> /etc/apache2/apache2.conf" \
@@ -76,3 +76,24 @@ error_log = /proc/self/fd/2\n\
 error_reporting = E_ALL\n\
 ' >> /usr/local/etc/php/conf.d/debug.ini
 
+# ext install
+RUN  apt update && apt install -y --no-install-recommends \
+  libfreetype6-dev \
+  libjpeg-dev \
+  libmagickwand-dev \
+  libjpeg62-turbo-dev \
+  libpng-dev \
+  ghostscript \
+  libzip-dev \
+  ; \
+  rm -rf /var/lib/apt/lists/*; \
+  apt clean; \
+  docker-php-ext-install -j "$(nproc)" \
+  bcmath \
+  exif \
+  mysqli \
+  opcache \
+  zip \
+  ; \
+  pecl install imagick-3.4.4; \
+  docker-php-ext-enable imagick; \
