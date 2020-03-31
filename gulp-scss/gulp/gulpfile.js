@@ -1,6 +1,6 @@
+const { src, dest, parallel, watch } = require('gulp');
 const cleanCSS = require('gulp-clean-css');
-// let sourcemaps = require('gulp-sourcemaps');
-const gulp = require('gulp');
+const gulpif = require('gulp-if');
 const cached = require('gulp-cached');
 const sass = require('gulp-sass');
 const postcss = require("gulp-postcss");
@@ -9,17 +9,7 @@ const autoprefixer = require('autoprefixer');
 const cssMqpacker = require('css-mqpacker')
 const plumber = require("gulp-plumber");
 const prettier = require('gulp-prettier');
-
-
-const browsers = ['last 2 versions', "ie >= 11"];
-// 最新2バージョンまでプレフィックス付与
-
-const sortOptions = {
-  'order': [
-    'custom-properties', 'dollar-variables', 'declarations', 'at-rules', 'rules'
-  ],
-  'unspecified-properties-position': 'bottom'
-}
+const config = require('./config.json');
 
 //setting : paths
 const paths = {
@@ -27,34 +17,32 @@ const paths = {
   'css': '/opt/assets/css/',
 }
 
-//setting : Sass Options
-let sassOptions = {
-  outputStyle: 'expanded'
-  // outputStyle: 'compressed'
-}
+console.log("options :");
+console.log(config);
 
 //Sass
-gulp.task('scss', function () {
+const scss = () => {
   return (
-    gulp.src(paths.scss + '**/*.scss')
+    src(paths.scss + '**/*.scss')
       .pipe(cached('cache')) // ファイルをキャッシュさせて差分があるときのみbuild prettierでの変更をbuildし続けてしまうため
       .pipe(plumber())
       .pipe(prettier({ singleQuote: true }))
-      .pipe(gulp.dest(file => file.base))
-      .pipe(sass(sassOptions))
+      .pipe(dest(file => file.base))
+      .pipe(sass(config.sassOptions))
       .pipe(postcss([
-        postcssSorting(sortOptions),
-        autoprefixer({ overrideBrowserslist: browsers, grid: true }),
+        postcssSorting(config.sortOptions),
+        autoprefixer(config.autoprefixerOptions),
         cssMqpacker,
       ]))
-      .pipe(cleanCSS())
-      .pipe(gulp.dest(paths.css))
+      .pipe(gulpif(config.sassOptions.outputStyle === 'compressed', cleanCSS()))
+      .pipe(dest(paths.css))
   );
-});
+}
 
-gulp.task('watch', () => {
-  gulp.watch(paths.scss + '**/*.scss', gulp.task('scss'));
-});
+const watch_task = () => {
+  watch(paths.scss + '**/*.scss', scss);
+}
 
-gulp.task('default', gulp.series(gulp.parallel('watch'), () => {
-}));
+exports.scss = scss;
+exports.watch_task = watch_task;
+exports.default = parallel(watch_task);

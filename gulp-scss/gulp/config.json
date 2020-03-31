@@ -1,0 +1,19 @@
+{
+  "sassOptions": {
+    "outputStyle": "compressed"
+  },
+  "autoprefixerOptions": {
+    "overrideBrowserslist": ["last 2 versions", "ie >= 11"],
+    "grid": true
+  },
+  "sortOptions": {
+    "order": [
+      "custom-properties",
+      "dollar-variables",
+      "declarations",
+      "at-rules",
+      "rules"
+    ],
+    "unspecified-properties-position": "bottom"
+  }
+}
