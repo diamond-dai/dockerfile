@@ -35,7 +35,7 @@ ENV PATH $PYENV_ROOT/bin:$PATH
 RUN git clone https://github.com/pyenv/pyenv.git ~/.pyenv \
   && echo 'eval "$(pyenv init -)"' >> ~/.bashrc \
   && . ~/.bashrc \
-  && PYTHON_VER=$(pyenv install --list | grep -v - | grep -v b | tail -1) \
+  && PYTHON_VER=$(pyenv install --list | grep -v - | grep -v b | grep -v a | grep -v rc | tail -1) \
   && pyenv install $PYTHON_VER \
   && pyenv global $PYTHON_VER
 
