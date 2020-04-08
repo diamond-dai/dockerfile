@@ -1,4 +1,4 @@
-FROM wordpress:php:7.3-apache
+FROM wordpress:php7.3-apache
 
 RUN apt update && apt install -y --no-install-recommends \
 # install mysql-client
