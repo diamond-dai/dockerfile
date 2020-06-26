@@ -10,6 +10,7 @@ const cssMqpacker = require('css-mqpacker')
 const plumber = require("gulp-plumber");
 const prettier = require('gulp-prettier');
 const config = require('./config.json');
+const sassGlob = require("gulp-sass-glob");
 
 //setting : paths
 const paths = {
@@ -27,6 +28,7 @@ const scss = () => {
       .pipe(cached('cache')) // ファイルをキャッシュさせて差分があるときのみbuild prettierでの変更をbuildし続けてしまうため
       .pipe(plumber())
       .pipe(prettier({ singleQuote: true }))
+      .pipe(sassGlob())
       .pipe(dest(file => file.base))
       .pipe(sass(config.sassOptions))
       .pipe(postcss([

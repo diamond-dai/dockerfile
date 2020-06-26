@@ -1,6 +1,6 @@
 {
   "sassOptions": {
-    "outputStyle": "compressed"
+    "outputStyle": "expanded"
   },
   "autoprefixerOptions": {
     "overrideBrowserslist": ["last 2 versions", "ie >= 11"],
