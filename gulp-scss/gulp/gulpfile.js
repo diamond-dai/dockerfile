@@ -27,9 +27,9 @@ const scss = () => {
     src(paths.scss + '**/*.scss')
       .pipe(cached('cache')) // ファイルをキャッシュさせて差分があるときのみbuild prettierでの変更をbuildし続けてしまうため
       .pipe(plumber())
-      .pipe(prettier({ singleQuote: true }))
+      // .pipe(prettier({ singleQuote: true }))
       .pipe(sassGlob())
-      .pipe(dest(file => file.base))
+      // .pipe(dest(file => file.base))
       .pipe(sass(config.sassOptions))
       .pipe(postcss([
         postcssSorting(config.sortOptions),

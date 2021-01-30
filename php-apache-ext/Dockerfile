@@ -1,4 +1,4 @@
-FROM php:7.3-apache
+FROM php:7.4-apache
 
 RUN apt update && apt install -y --no-install-recommends \
   # install mysql-client

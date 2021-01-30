@@ -6,6 +6,13 @@
 ./run.sh
 ```
 
+### 監視無しで実行
+
+```
+npx gulp scss
+```
+
+
 ### package.json の ver up
 
 ホストで以下を実行 nodeがインストール済みであること
@@ -16,12 +23,23 @@ npm install -g npm-check-updates
 ncu -u
 ```
 
+
+### gulpfile.js 上書き
+
+
+ホストにgulpfile.jsを作成し下記のパスにマウント
+
+```
+/opt/gulp/gulpfile.js
+```
+
+
 ### config上書き
 
 ホストにgulpconfig.jsonを作成し下記のパスにマウント
 
 ```
-/opt/gulpconfig.json
+/opt/gulp/config.json
 ```
 
 内容
