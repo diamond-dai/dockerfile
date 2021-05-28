@@ -1,7 +1,6 @@
 const { src, dest, parallel, watch } = require('gulp');
 const cleanCSS = require('gulp-clean-css');
 const gulpif = require('gulp-if');
-const cached = require('gulp-cached');
 const sass = require('gulp-sass');
 const postcss = require("gulp-postcss");
 const postcssSorting = require('postcss-sorting');
@@ -25,7 +24,6 @@ console.log(config);
 const scss = () => {
   return (
     src(paths.scss + '**/*.scss')
-      .pipe(cached('cache')) // ファイルをキャッシュさせて差分があるときのみbuild prettierでの変更をbuildし続けてしまうため
       .pipe(plumber())
       // .pipe(prettier({ singleQuote: true }))
       .pipe(sassGlob())
