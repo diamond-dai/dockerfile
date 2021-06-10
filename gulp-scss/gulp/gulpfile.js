@@ -7,10 +7,9 @@ const postcssSorting = require('postcss-sorting');
 const autoprefixer = require('autoprefixer');
 const cssMqpacker = require('css-mqpacker')
 const plumber = require("gulp-plumber");
-const prettier = require('gulp-prettier');
 const config = require('./config.json');
 const sassGlob = require("gulp-sass-glob");
-
+const fiber = require('fibers')
 sass.compiler = require("dart-sass");
 
 //setting : paths
@@ -27,10 +26,9 @@ const scss = () => {
   return (
     src(paths.scss + '**/*.scss')
       .pipe(plumber())
-      // .pipe(prettier({ singleQuote: true }))
       .pipe(sassGlob())
       // .pipe(dest(file => file.base))
-      .pipe(sass(config.sassOptions))
+      .pipe(sass(Object.assign(config.sassOptions,{ fiber: fiber,})))
       .pipe(postcss([
         postcssSorting(config.sortOptions),
         autoprefixer(config.autoprefixerOptions),
