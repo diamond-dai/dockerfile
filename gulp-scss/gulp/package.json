@@ -12,16 +12,17 @@
   "devDependencies": {
     "css-mqpacker": "^7.0.0",
     "gulp": "^4.0.2",
-    "gulp-autoprefixer": "^7.0.1",
+    "gulp-autoprefixer": "^8.0.0",
     "gulp-clean-css": "^4.3.0",
     "gulp-if": "^3.0.0",
     "gulp-plumber": "^1.2.1",
-    "gulp-postcss": "^8.0.0",
+    "gulp-postcss": "^9.0.0",
     "gulp-prettier": "^3.0.0",
-    "gulp-sass": "^4.0.2",
-    "gulp-sourcemaps": "^2.6.5",
-    "postcss-sorting": "^5.0.1",
-    "prettier": "^2.0.2",
+    "gulp-sass": "^4.1.0",
+    "dart-sass": "^1.25.0",
+    "gulp-sourcemaps": "^3.0.0",
+    "postcss-sorting": "^6.0.0",
+    "prettier": "^2.3.1",
     "gulp-sass-glob": "^1.1.0"
   }
 }

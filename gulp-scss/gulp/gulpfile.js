@@ -11,6 +11,8 @@ const prettier = require('gulp-prettier');
 const config = require('./config.json');
 const sassGlob = require("gulp-sass-glob");
 
+sass.compiler = require("dart-sass");
+
 //setting : paths
 const paths = {
   'scss': '/opt/assets/scss/',
