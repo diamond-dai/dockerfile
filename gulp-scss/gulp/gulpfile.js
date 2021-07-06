@@ -25,10 +25,15 @@ console.log(config);
 const scss = () => {
   return (
     src(paths.scss + '**/*.scss')
-      .pipe(plumber())
+      .pipe(plumber({
+        errorHandler: function (err) {
+          console.log(err.messageFormatted);
+          this.emit('end');
+        }
+      }))
       .pipe(sassGlob())
       // .pipe(dest(file => file.base))
-      .pipe(sass(Object.assign(config.sassOptions,{ fiber: fiber,})))
+      .pipe(sass(Object.assign(config.sassOptions, { fiber: fiber, })))
       .pipe(postcss([
         postcssSorting(config.sortOptions),
         autoprefixer(config.autoprefixerOptions),
